@@ -41,4 +41,32 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+    public function userCreateOrUpdate($request,$type="create"){
+
+        if($type == 'create'){
+            return User::create($request);
+        }
+        else {
+            return User::where('id',$request['id'])->update($request);
+        }
+    }
+
+
+    public function userInfoCreateOrUpdate($user,$request){
+        $isuser=User::where('id',$user->id)->first();
+
+        $request_input=[
+            'user_id'=>$user->id,
+            'city'=>$request->city,
+            'country'=>1,
+        ];
+        if(!empty($isuser)){
+            UserInfo::create($request_input);
+        }
+        else {
+            UserInfo::where('user_id',$user->id)->update($request_input);
+        }
+    }
 }
